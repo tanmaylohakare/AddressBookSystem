@@ -20,6 +20,7 @@ public class Main {
             System.out.println("1. Add Contact");
             System.out.println("2. Edit Contact");
             System.out.println("3. Display Contacts");
+            System.out.println("5. Delete Contact");
             System.out.println("4. Exit");
             System.out.print("Choose an option: ");
 
@@ -135,7 +136,30 @@ public class Main {
                 break;
                 
                 
-            case 4:
+            case 4: 
+                System.out.print("Enter the First Name of the contact to delete: ");
+                String deleteName = sc.nextLine();
+                boolean isDeleted = false;
+
+                for (int i = 0; i < count; i++) {
+                    if (addressBookArray[i].getFirstName().equalsIgnoreCase(deleteName)) {
+                        isDeleted = true;
+
+                        for (int j = i; j < count - 1; j++) {
+                            addressBookArray[j] = addressBookArray[j + 1];
+                        }
+                        count--; 
+                        System.out.println("Contact deleted successfully.");
+                        break;
+                    }
+                }
+
+                if (!isDeleted) {
+                    System.out.println("Contact not found.");
+                }
+                break;
+                
+            case 5:
 
             	System.out.println("Exiting Address Book System.");
                 sc.close(); 
@@ -145,8 +169,7 @@ public class Main {
            default:
                 	System.out.println("Invalid choice Please try again.");
                 	
-		
-	}
+			}
 	}
 	}
 	}
