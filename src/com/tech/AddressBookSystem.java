@@ -110,6 +110,22 @@ public class AddressBookSystem {
 		
 	}
 	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if(this ==obj)
+			return true;
+		if(obj == null|| getClass() != obj.getClass())
+				return false;
+		AddressBookSystem that=(AddressBookSystem)obj;
+	    return firstName.equalsIgnoreCase(that.firstName) && lastName.equalsIgnoreCase(that.lastName);
+	}
+	
+	public int hashCode()
+	{
+        return java.util.Objects.hash(firstName.toLowerCase(), lastName.toLowerCase());
+	}
+	
 }
 
 

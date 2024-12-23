@@ -1,7 +1,5 @@
 package com.tech;
 
-import java.security.PublicKey;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -132,8 +130,8 @@ public static void showAddressBookSystem(AddressBook addressBook ,Scanner sc) {
 
 // Method
 public static void addContact(AddressBook addressBook,Scanner sc)
-	{
 
+{
 	System.out.println("\n Enter details for Person   :- ");
 
 System.out.print("Enter First Name: ");
@@ -141,6 +139,16 @@ String firstName = sc.nextLine();
 
 System.out.print("Enter Last Name: ");
 String lastName = sc.nextLine();
+
+
+boolean isDuplicate=addressBook.getContacts().stream().anyMatch(contact -> contact.getFirstName().equalsIgnoreCase(firstName) && contact.getLastName().equalsIgnoreCase(lastName));
+
+if(isDuplicate)
+{
+	System.out.println("Duplicate Entry Detected ! Contact not Added");
+	return;
+}
+
 
 System.out.print("Enter Address: ");
 String address = sc.nextLine();
@@ -164,7 +172,7 @@ String email = sc.nextLine();
 
 System.out.println("Contact added Sucessfully.");
 
-	
+
 }
 
 //Method to Edit the contact
@@ -257,10 +265,4 @@ if (!found) {
             System.out.println("Contact not found.");
         }
 	}
-
-
-
-
-
-
 }
