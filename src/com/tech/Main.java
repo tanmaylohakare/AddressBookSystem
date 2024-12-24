@@ -1,16 +1,25 @@
 package com.tech;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Main {
+	private static final Map<String, List<AddressBookSystem>> cityDictionary =new HashMap<>();
+	private static final Map<String, List<AddressBookSystem>> stateDictionary=new HashMap<>();
+	
+
 
 	public static void main(String[] args) {
 
 		System.out.println("Welcome to the Address Book System");
 
-		HashMap<String, AddressBook> addressBook = new HashMap<>();
-
+		
+		HashMap<String, AddressBook> AddressBooks=new HashMap<>();
 		Scanner sc = new Scanner(System.in);
 
 		while (true) {
@@ -29,10 +38,10 @@ public class Main {
 				System.out.println("Enter the name of the new Address Book System : ");
 				String addressBookName = sc.nextLine();
 
-				if (addressBook.containsKey(addressBookName)) {
+				if (AddressBooks.containsKey(addressBookName)) {
 					System.out.println("An Address book with the same name is already exist  ");
 				} else {
-					addressBook.put(addressBookName, new AddressBook(addressBookName));
+					AddressBooks.put(addressBookName, new AddressBook(addressBookName));
 					System.out.println(addressBookName);
 
 				}
@@ -42,7 +51,7 @@ public class Main {
 			case 2:
 				System.out.println("Enter the name of the Address Book to Select");
 				String selectedBook = sc.nextLine();
-				AddressBook selectedAddressBook = addressBook.get(selectedBook);
+				AddressBook selectedAddressBook = AddressBooks.get(selectedBook);
 
 				if (selectedAddressBook != null) {
 					showAddressBookSystem(selectedAddressBook, sc);
@@ -52,6 +61,7 @@ public class Main {
 				}
 
 				break;
+			
 
 			case 3:
 				System.out.println("Existing Address book System. ");
@@ -77,7 +87,8 @@ public class Main {
 			System.out.println("3. Display Contacts");
 			System.out.println("4. Delete Contact");
 			System.out.println("5. Search it by Name Or State");
-			System.out.println("6. Go back to Main Menu");
+			System.out.println("6. View Persons by City/State");
+			System.out.println("7. Go back to Main Menu");
 			System.out.print("Choose an option: ");
 
 			int choice = sc.nextInt();
@@ -108,7 +119,13 @@ public class Main {
 			case 5:
 				searchContacts(addressBook, sc);
 				break;
+				
 			case 6:
+				viewPersonsByCityOrState(sc);
+				
+				break;
+				
+			case 7:
 				
 				return;
 
@@ -158,85 +175,78 @@ public class Main {
 		System.out.print("Enter Email: ");
 		String email = sc.nextLine();
 
-		addressBook
-				.addcontact(new AddressBookSystem(firstName, lastName, address, city, state, zip, phoneNumber, email));
+		AddressBookSystem contact=new AddressBookSystem(firstName, lastName, address, city, state, zip, phoneNumber, email);
+		addressBook.getContacts().add(contact);
+		cityDictionary.computeIfAbsent(city, k -> new ArrayList<>()).add(contact);
+		stateDictionary.computeIfAbsent(state, k -> new ArrayList<>()).add(contact);
 
 		System.out.println("Contact added Sucessfully.");
 
 	}
 
 //Method to Edit the contact
-	public static void Edit_Contact(AddressBook addressBook, Scanner sc) {
+	public static void Edit_Contact(AddressBook addressBook, Scanner sc) 
+	{
 		System.out.print("Enter the First Name of the contact to edit: ");
 		String searchName = sc.nextLine();
-		boolean found = false;
+		
+		Optional<AddressBookSystem> contactOptional =addressBook.getContacts().stream().filter(contact -> contact.getFirstName().equalsIgnoreCase(searchName)).findFirst();
 
-		for (int i = 0; i < addressBook.getContacts().size(); i++) {
-			if (addressBook.getContacts().get(i).getFirstName().equalsIgnoreCase(searchName)) {
-				found = true;
+		if (contactOptional.isPresent()) {
+	        AddressBookSystem contact = contactOptional.get(); // Get the found contact
 
 				System.out.println("Editing contact: ");
-				addressBook.getContacts().get(i).showinfo();
+				contact.showinfo();
 
 				System.out.println("\nEnter new details (leave blank to keep unchanged):");
+				
 				System.out.print("Enter First Name: ");
 				String newFirstName = sc.nextLine();
-				if (!newFirstName.isBlank())
-					addressBook.getContacts().get(i).setFirstName(newFirstName);
+				if (!newFirstName.isBlank()) contact.setFirstName(newFirstName);
 
 				System.out.print("Enter Last Name: ");
 				String newLastName = sc.nextLine();
-				if (!newLastName.isBlank())
-					addressBook.getContacts().get(i).setLastName(newLastName);
-
+				if (!newLastName.isBlank()) contact.setLastName(newLastName);
+				
 				System.out.print("Enter Address: ");
 				String newAddress = sc.nextLine();
-				if (!newAddress.isBlank())
-					addressBook.getContacts().get(i).setAddress(newAddress);
+				if (!newAddress.isBlank())contact.setAddress(newAddress);
 
 				System.out.print("Enter City: ");
 				String newCity = sc.nextLine();
-				if (!newCity.isBlank())
-					addressBook.getContacts().get(i).setCity(newCity);
-
+				if (!newCity.isBlank())contact.setCity(newCity);
+				
 				System.out.print("Enter State: ");
 				String newState = sc.nextLine();
-				if (!newState.isBlank())
-					addressBook.getContacts().get(i).setState(newState);
-
+				if (!newState.isBlank())contact.setState(newState);
+				
 				System.out.print("Enter ZIP: ");
 				String newZip = sc.nextLine();
-				if (!newZip.isBlank())
-					addressBook.getContacts().get(i).setZip(newZip);
+				if (!newZip.isBlank())contact.setZip(newZip);
 
 				System.out.print("Enter Phone Number: ");
 				String newPhoneNumber = sc.nextLine();
-				if (!newPhoneNumber.isBlank())
-					addressBook.getContacts().get(i).setPhoneNumber(newPhoneNumber);
+				if (!newPhoneNumber.isBlank())contact.setPhoneNumber(newPhoneNumber);
 
 				System.out.print("Enter Email: ");
 				String newEmail = sc.nextLine();
-				if (!newEmail.isBlank())
-					addressBook.getContacts().get(i).setEmail(newEmail);
+				if (!newEmail.isBlank())contact.setEmail(newEmail);
 
 				System.out.println("Contact updated successfully.");
-				break;
 
 			}
-		}
-		if (!found) {
+		else {
 			System.out.println("Contact not found.");
 		}
+		
 	}
 
 //Method to Display_Contacts
 
 	public static void Display_Contacts(AddressBook addressBook) {
-		System.out.println("Enter the First Name to display the contact .");
-		for (int i = 0; i < addressBook.getContacts().size(); i++) {
-			System.out.println("\nContact " + (i + 1) + " :");
-			addressBook.getContacts().get(i).showinfo();
-		}
+		
+		addressBook.getContacts().forEach(contact -> { contact.showinfo( );System.out.println();});
+		
 	}
 
 	
@@ -245,27 +255,39 @@ public class Main {
 	public static void Delete_Contact(AddressBook addressBook, Scanner sc) {
 		System.out.print("Enter the First Name of the contact to delete: ");
 		String deleteName = sc.nextLine();
-		boolean isDeleted = false;
-
-		for (int i = 0; i < addressBook.getContacts().size(); i++) {
-			if (addressBook.getContacts().get(i).getFirstName().equalsIgnoreCase(deleteName)) {
-				addressBook.getContacts().remove(i);
-				isDeleted = true;
-
-				System.out.println("Contact deleted successfully.");
+		
+		Iterator<AddressBookSystem> iterator =addressBook.getContacts().iterator();
+		boolean isDeleted=false;
+		
+		while(iterator.hasNext())
+		{
+			AddressBookSystem contact = iterator.next();
+			
+			if(contact.getFirstName().equalsIgnoreCase(deleteName))
+			{
+				iterator.remove();
+				
+				cityDictionary.get(contact.getCity()).remove(contact);
+				stateDictionary.get(contact.getState()).remove(contact);
+				
+				isDeleted =true;
+				
+				System.out.println("Contact delete successfully. ");
 				break;
 			}
 		}
+		
 		if (!isDeleted) {
 			System.out.println("Contact not found.");
 		}
 	}
 	
+	// Method to Search Contact By city 
 	public static void searchContacts(AddressBook addressBook, Scanner sc) {
         System.out.println("Search by:");
         System.out.println("1. City");
         System.out.println("2. State");
-        System.out.print("Choose an option: ");
+        System.out.println("Choose an option: ");
         int choice = sc.nextInt();
         sc.nextLine();
 
@@ -281,10 +303,52 @@ public class Main {
             addressBook.getContacts().stream()
                     .filter(contact -> contact.getState().equalsIgnoreCase(state))
                     .forEach(System.out::println);
-        } else {
+        }
+        else {
             System.out.println("Invalid choice.");
         }
     }
 	
-	
+	// View Person By its City Or State
+	private static void viewPersonsByCityOrState(Scanner sc)
+	{
+		System.out.println("\nView Person by :");
+		System.out.println("1. City");
+		System.out.println("2. State");
+		System.out.println("Choose an option : ");
+		
+		int choice=sc.nextInt();
+		sc.nextLine();
+		
+		 if (choice == 1) {
+	            System.out.print("Enter City: ");
+	            String city = sc.nextLine();
+	            List<AddressBookSystem> cityContacts = cityDictionary.getOrDefault(city, new ArrayList<>());
+	            
+	            if(cityContacts.isEmpty())
+	            {
+	            	System.out.println("No Contact Found in City :"+ city);
+	            }
+	            else
+	            {
+	            	cityContacts.forEach(AddressBookSystem :: showinfo);
+	            }
+	        } 
+		 else if (choice == 2) {
+	            System.out.print("Enter State: ");
+	            String state = sc.nextLine();
+	            List<AddressBookSystem> stateContacts = stateDictionary.getOrDefault(state, new ArrayList<>());
+	            if(stateContacts.isEmpty())
+	            {
+	            	System.out.println("No Contact Found in State :"+ state);
+	            }
+	            else 
+	            {
+	            stateContacts.forEach(AddressBookSystem:: showinfo);
+	            }
+	            }
+		 else {
+	            System.out.println("Invalid choice.");
+	        }
+	}
 }
