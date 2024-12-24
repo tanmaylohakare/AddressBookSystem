@@ -250,7 +250,9 @@ public class Main {
 
 	public static void Display_Contacts(AddressBook addressBook) {
 		
-		addressBook.getContacts().forEach(contact -> { contact.showinfo( );System.out.println();});
+		addressBook.getContacts().stream().sorted((c1,c2) -> c1.getFirstName().compareToIgnoreCase(c2.getFirstName()))
+		.forEach(contact -> { contact.showinfo();System.out.println();
+		});
 		
 	}
 
@@ -381,9 +383,9 @@ public class Main {
 			String state=sc.nextLine();
 			long count=stateDictionary.getOrDefault(state, new ArrayList<>()).stream().count();
 			System.out.println("Number Of Contact in State "+ state +" :"+ count);
-			
 		}
-		else {
+		else
+		{
 			System.out.println("Invalid choice");
 		}
 	}
