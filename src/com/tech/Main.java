@@ -88,7 +88,8 @@ public class Main {
 			System.out.println("4. Delete Contact");
 			System.out.println("5. Search it by Name Or State");
 			System.out.println("6. View Persons by City/State");
-			System.out.println("7. Go back to Main Menu");
+			System.out.println("7. Count the Person by City/State");
+			System.out.println("8. Go back to Main Menu");
 			System.out.print("Choose an option: ");
 
 			int choice = sc.nextInt();
@@ -126,9 +127,13 @@ public class Main {
 				break;
 				
 			case 7:
+				CountPersonByCityOrState(sc);
+				
+				break;
+			case 8:
 				
 				return;
-
+				
 			default:
 				System.out.println("Invalid choice Please try again.");
 
@@ -351,4 +356,36 @@ public class Main {
 	            System.out.println("Invalid choice.");
 	        }
 	}
+	
+	public static void CountPersonByCityOrState(Scanner sc)
+	{
+		System.out.println("\nCount Contacts by: ");
+		System.out.println("1. City");
+		System.out.println("2. State");
+		System.out.println("Choose an option: ");
+		
+		int choice= sc.nextInt();
+		sc.nextLine();
+		
+		if(choice==1)
+		{
+			System.out.println("1.Enter the City");
+			String city=sc.nextLine();
+			long count= cityDictionary.getOrDefault(city, new ArrayList<>()).stream().count();
+			System.out.println("Number Of Contact in City "+ city +" :"+ count);
+			
+		}
+		else if(choice == 2)
+		{
+			System.out.println("2.Enter the State");
+			String state=sc.nextLine();
+			long count=stateDictionary.getOrDefault(state, new ArrayList<>()).stream().count();
+			System.out.println("Number Of Contact in State "+ state +" :"+ count);
+			
+		}
+		else {
+			System.out.println("Invalid choice");
+		}
+	}
+	
 }
