@@ -1,6 +1,7 @@
 package com.tech;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -256,9 +257,7 @@ public class Main {
 		
 	}
 
-	
-	
-	// Method to delete Contact
+// Method to delete Contact
 	public static void Delete_Contact(AddressBook addressBook, Scanner sc) {
 		System.out.print("Enter the First Name of the contact to delete: ");
 		String deleteName = sc.nextLine();
@@ -322,6 +321,7 @@ public class Main {
 		System.out.println("\nView Person by :");
 		System.out.println("1. City");
 		System.out.println("2. State");
+		System.out.println("3. ZIP");
 		System.out.println("Choose an option : ");
 		
 		int choice=sc.nextInt();
@@ -390,4 +390,34 @@ public class Main {
 		}
 	}
 	
-}
+	public static void sortContacts(AddressBook addressBook, Scanner sc)
+	{
+		System.out.println("\n Sort Contacts by: ");
+		System.out.println("1. City");
+		System.out.println("2. State");
+		System.out.println("3. ZIP");
+		System.out.println("Choose an Option: ");
+		
+		int choice=sc.nextInt();
+		sc.nextLine();
+		
+		
+		switch (choice) {
+		case 1
+			-> addressBook.getContacts().stream()
+            .sorted(Comparator.comparing(AddressBookSystem::getCity, String.CASE_INSENSITIVE_ORDER))
+            .forEach(AddressBookSystem::showinfo);		
+			
+		case 2
+			-> addressBook.getContacts().stream()
+            .sorted(Comparator.comparing(AddressBookSystem::getState, String.CASE_INSENSITIVE_ORDER))
+            .forEach(AddressBookSystem::showinfo);
+			
+		case 3
+		-> addressBook.getContacts().stream()
+        .sorted(Comparator.comparing(AddressBookSystem::getZip, String.CASE_INSENSITIVE_ORDER))
+        .forEach(AddressBookSystem::showinfo);
+			
+		default -> System.out.println("Invalid Choice");
+	
+		}}}

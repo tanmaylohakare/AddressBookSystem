@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class AddressBook {
 	
 	private String name;
-	private ArrayList<AddressBookSystem> contacts;
+    ArrayList<AddressBookSystem> contacts;
 	
 	
 	// Constructor
