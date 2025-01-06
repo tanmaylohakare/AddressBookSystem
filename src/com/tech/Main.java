@@ -1,5 +1,11 @@
 package com.tech;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -90,7 +96,11 @@ public class Main {
 			System.out.println("5. Search it by Name Or State");
 			System.out.println("6. View Persons by City/State");
 			System.out.println("7. Count the Person by City/State");
-			System.out.println("8. Go back to Main Menu");
+			System.out.println("8. Sort Enties By City, State, ZIP");
+			System.out.println("9. Save Address Book to File");
+            System.out.println("10. Load Address Book from File");
+            System.out.println("11. Create a New File to Save the Data");
+			System.out.println("12. Go back to Main Menu");
 			System.out.print("Choose an option: ");
 
 			int choice = sc.nextInt();
@@ -128,12 +138,38 @@ public class Main {
 				break;
 				
 			case 7:
+				
 				CountPersonByCityOrState(sc);
 				
 				break;
 			case 8:
 				
+				sortContacts(addressBook, sc);
+				break;
+				
+			 case 9:
+				 
+                 writeAddressBookToFile(addressBook);
+                 break;
+                 
+             case 10:
+            	 
+                 System.out.print("Enter file name to load: ");
+                 String fileName = sc.nextLine();
+                 readAddressBookFromFile(fileName, addressBook);
+                 break;
+	
+             case 11: 
+            	 
+            	 System.out.print("Enter file name to create: ");
+                 String newFileName = sc.nextLine();
+                 createFile(newFileName);
+                 break;
+            	 
+				
+			case 12 :
 				return;
+				
 				
 			default:
 				System.out.println("Invalid choice Please try again.");
@@ -142,7 +178,7 @@ public class Main {
 		}
 	}
 
-// Method
+// Method to add the Contacts
 	public static void addContact(AddressBook addressBook, Scanner sc)
 
 	{
@@ -420,4 +456,67 @@ public class Main {
 			
 		default -> System.out.println("Invalid Choice");
 	
-		}}}
+		}}
+	
+	// Method to create a file
+	public static void createFile(String fileName) {
+	    File file = new File(fileName);
+	    try {
+	        if (file.exists()) {
+	            System.out.println("File already exists: " + fileName);
+	        } else if (file.createNewFile()) {
+	            System.out.println("File created successfully: " + fileName);
+	        } else {
+	            System.out.println("Failed to create the file: " + fileName);
+	        }
+	    } catch (IOException e) {
+	        System.out.println("Error while creating the file: " + e.getMessage());
+	    }
+	}
+
+	// <ethod to Write the File 
+	public static void writeAddressBookToFile(AddressBook addressBook) {
+        String fileName = addressBook.getName() + ".txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (AddressBookSystem contact : addressBook.getContacts()) {
+                writer.write(contact.toString());
+                writer.newLine();
+            }
+            System.out.println("Address Book saved to file: " + fileName);
+        } catch (IOException e) {
+            System.out.println("Error saving Address Book to file: " + e.getMessage());
+        }
+    }
+
+
+	// Method to read Address Book from a file
+    public static void readAddressBookFromFile(String fileName, AddressBook addressBook) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] details = line.split(", ");
+                if (details.length == 8) {
+                    AddressBookSystem contact = new AddressBookSystem(
+                            details[0], // First Name
+                            details[1], // Last Name
+                            details[2], // Address
+                            details[3], // City
+                            details[4], // State
+                            details[5], // ZIP
+                            details[6], // Phone Number
+                            details[7]  // Email
+                    );
+                    addressBook.getContacts().add(contact);
+                    cityDictionary.computeIfAbsent(contact.getCity(), k -> new ArrayList<>()).add(contact);
+                    stateDictionary.computeIfAbsent(contact.getState(), k -> new ArrayList<>()).add(contact);
+                }
+            }
+            System.out.println("Address Book loaded from file: " + fileName);
+        } catch (IOException e) {
+            System.out.println("Error reading Address Book from file: " + e.getMessage());
+        }
+    }
+
+
+
+}
